@@ -5,9 +5,12 @@
 #include <bsp_btn_ble.h>
 #include <app_timer.h>
 #include <peer_manager.h>
+
 #define NRF_LOG_MODULE_NAME "BLE_DEVICE_INFORMATION"
 #include <nrf_log.h>
 #include <nrf_log_ctrl.h>
+#include <log/log.h>
+
 #include <softdevice_handler.h>
 #include <ble_advdata.h>
 #include <ble_advertising.h>
@@ -30,37 +33,37 @@ void sec_req_timeout_handler(void *ctx) {
 	}
 }
 
-#define TRACE() NRF_LOG_INFO("%s()\r\n", (int)__FUNCTION__)
-
 static void bsp_event_handler(bsp_event_t event) {
-	TRACE();
+	log_enter("%d", event);
 }
 
 static void sys_event_handler(uint32_t event) {
-	TRACE();
+	log_enter("%ld", event);
 }
 
 static void pm_event_handler(pm_evt_t const *event) {
-	TRACE();
+	log_enter("%p", event);
 }
 
 static void adv_event_handler(ble_adv_evt_t event) {
-	TRACE();
+	log_enter("%d", event);
 	bsp_indication_set(BSP_INDICATE_ADVERTISING);
 }
 
 static void db_discovery_handler(ble_db_discovery_evt_t *event) {
-	TRACE();
+	log_enter("%p", event);
 }
 
 static void conn_params_error_handler(uint32_t nrf_error) {
-	TRACE();
+	log_enter("%ld", nrf_error);
 }
 
 int main(void) {
 	int prescaler = 0;
 	uint32_t err_code = NRF_LOG_INIT(NULL);
 	APP_ERROR_CHECK(err_code);
+
+	info("Hello !");
 
 	APP_TIMER_INIT(prescaler, 4, false);
 	APP_TIMER_DEF(sec_req_timer_id);
