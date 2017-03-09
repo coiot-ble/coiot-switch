@@ -1,13 +1,15 @@
 project('app', 'C')
 
 sdk = subproject('sdk')
+vanilla = subproject('vanilla',
+    default_options: ['no_stderr=1','printf=NRF_LOG_INFO'])
 
 app = files('main.c')
 
 ldmap = '../app.ld'
 e = executable(meson.project_name(), app,
-	include_directories: sdk.get_variable('i'),
-	link_with: sdk.get_variable('l'),
+	include_directories: sdk.get_variable('i') + vanilla.get_variable('vanilla_i'),
+	link_with: [sdk.get_variable('l'), vanilla.get_variable('vanilla')],
 	link_args: sdk.get_variable('link_args') + ['-T', ldmap],
 	c_args: ['-DNRF_LOG_ENABLED', '-DNRF_LOG_DEFAULT_LEVEL=4',
 		'-DSWI_DISABLE0', '-DBLE_STACK_SUPPORT_REQD',

@@ -61,7 +61,6 @@ int main(void) {
 	int prescaler = 0;
 	uint32_t err_code = NRF_LOG_INIT(NULL);
 	APP_ERROR_CHECK(err_code);
-	NRF_LOG_INFO("Hello\r\n");
 
 	APP_TIMER_INIT(prescaler, 4, false);
 	APP_TIMER_DEF(sec_req_timer_id);
@@ -175,11 +174,14 @@ int main(void) {
 	};
 	err_code = ble_conn_params_init(&cp_init);
 	APP_ERROR_CHECK(err_code);
-	ble_advertising_start(BLE_ADV_MODE_FAST);
+
+	err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
+	APP_ERROR_CHECK(err_code);
 
 	while(true) {
 		if(!NRF_LOG_PROCESS()) {
-			sd_app_evt_wait();
+			err_code = sd_app_evt_wait();
+			APP_ERROR_CHECK(err_code);
 		}
 	}
 }
