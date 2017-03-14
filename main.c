@@ -176,6 +176,8 @@ int main(void) {
 	ble_dis_init_t dis_init = {};
 	ble_srv_ascii_to_utf8(&dis_init.manufact_name_str, "Leo G.");
 	ble_srv_ascii_to_utf8(&dis_init.model_num_str, "coiot-dk");
+	BLE_GAP_CONN_SEC_MODE_SET_OPEN(&dis_init.dis_attr_md.read_perm);
+	BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&dis_init.dis_attr_md.write_perm);
 	err_code = ble_dis_init(&dis_init);
 	APP_ERROR_CHECK(err_code);
 
