@@ -113,10 +113,6 @@ int main(void) {
 	log_verbose = true;
 
 	APP_TIMER_INIT(prescaler, 4, false);
-	APP_TIMER_DEF(sec_req_timer_id);
-
-	err_code = app_timer_create(&sec_req_timer_id, APP_TIMER_MODE_SINGLE_SHOT, sec_req_timeout_handler);
-	APP_ERROR_CHECK(err_code);
 
 	err_code = bsp_init(BSP_INIT_LED | BSP_INIT_BUTTONS,
 			APP_TIMER_TICKS(100, prescaler),
