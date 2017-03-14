@@ -173,6 +173,17 @@ int main(void) {
 	err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
 	APP_ERROR_CHECK(err_code);
 
+	ble_gap_addr_t btaddr;
+	sd_ble_gap_address_get(&btaddr);
+
+	NRF_LOG_INFO("btaddr = %02x:%02x:%02x:%02x:%02x:%02x\r\n",
+			btaddr.addr[5],
+			btaddr.addr[4],
+			btaddr.addr[3],
+			btaddr.addr[2],
+			btaddr.addr[1],
+			btaddr.addr[0]);
+
 	while(true) {
 		if(!NRF_LOG_PROCESS()) {
 			err_code = sd_app_evt_wait();
