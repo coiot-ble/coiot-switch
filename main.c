@@ -21,10 +21,6 @@
 #include <ble_conn_state.h>
 #include <ble_dis.h>
 
-static void sys_event_handler(uint32_t event) {
-	log_enter("%ld", event);
-}
-
 static void pm_event_handler(pm_evt_t const *event) {
 	log_enter("%p", event);
 }
@@ -72,9 +68,6 @@ int main(void) {
 	CHECK_RAM_START_ADDR(0, 1);
 
 	err_code = softdevice_enable(&ble_enable_params);
-	APP_ERROR_CHECK(err_code);
-
-	err_code = softdevice_sys_evt_handler_set(sys_event_handler);
 	APP_ERROR_CHECK(err_code);
 
 	err_code = pm_init();
