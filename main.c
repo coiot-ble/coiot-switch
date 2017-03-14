@@ -21,10 +21,6 @@
 #include <ble_conn_state.h>
 #include <ble_dis.h>
 
-static void pm_event_handler(pm_evt_t const *event) {
-	log_enter("%p", event);
-}
-
 static void adv_event_handler(ble_adv_evt_t event) {
 	log_enter("%d", event);
 	bsp_indication_set(BSP_INDICATE_ADVERTISING);
@@ -93,9 +89,6 @@ int main(void) {
 	};
 
 	err_code = pm_sec_params_set(&sec_params);
-	APP_ERROR_CHECK(err_code);
-
-	err_code = pm_register(pm_event_handler);
 	APP_ERROR_CHECK(err_code);
 
 	const char *device_name = "Device Informations";
