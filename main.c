@@ -140,6 +140,9 @@ int main(void) {
 	err_code = softdevice_enable(&ble_enable_params);
 	APP_ERROR_CHECK(err_code);
 
+	err_code = softdevice_ble_evt_handler_set(ble_event_handler);
+	APP_ERROR_CHECK(err_code);
+
 	err_code = softdevice_sys_evt_handler_set(sys_event_handler);
 	APP_ERROR_CHECK(err_code);
 
