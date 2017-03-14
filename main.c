@@ -25,6 +25,11 @@ static void db_discovery_handler(ble_db_discovery_evt_t *event) {
 	log_enter("%p", event);
 }
 
+static void adv_event_handler(ble_adv_evt_t event) {
+	log_enter("%d", event);
+	bsp_indication_set(BSP_INDICATE_ADVERTISING);
+}
+
 int main(void) {
 	int prescaler = 0;
 	uint32_t err_code = NRF_LOG_INIT(NULL);
@@ -117,7 +122,7 @@ int main(void) {
 		.ble_adv_slow_interval = 3200,
 		.ble_adv_slow_timeout = 180
 	};
-	err_code = ble_advertising_init(&advdata, NULL, &options, NULL, NULL);
+	err_code = ble_advertising_init(&advdata, NULL, &options, adv_event_handler, NULL);
 	APP_ERROR_CHECK(err_code);
 
 	err_code = ble_db_discovery_init(db_discovery_handler);
