@@ -6,9 +6,11 @@
 #include <app_timer.h>
 #include <peer_manager.h>
 
+#pragma GCC diagnostic ignored "-Wint-conversion"
 #define NRF_LOG_MODULE_NAME "BLE_DEVICE_INFORMATION"
 #include <nrf_log.h>
 #include <nrf_log_ctrl.h>
+#undef ASSERT
 #include <log/log.h>
 
 #include <softdevice_handler.h>
@@ -16,6 +18,7 @@
 #include <ble_advertising.h>
 #include <ble_db_discovery.h>
 #include <ble_conn_params.h>
+#include <ble_conn_state.h>
 #include <ble_dis.h>
 
 static void *seq_req_timeout_handler_arg = NULL;

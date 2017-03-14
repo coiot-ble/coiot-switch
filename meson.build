@@ -12,7 +12,8 @@ e = executable(meson.project_name(), app,
 	include_directories: sdk.get_variable('i') + vanilla.get_variable('vanilla_i'),
 	link_with: [sdk.get_variable('l'), vanilla.get_variable('vanilla')],
 	link_args: sdk.get_variable('link_args') + ['-T', ldmap],
-	c_args: ['-DNRF_LOG_ENABLED', '-DNRF_LOG_DEFAULT_LEVEL=4',
+	c_args: ['-Wall', '-Werror',
+		'-DNRF_LOG_ENABLED', '-DNRF_LOG_DEFAULT_LEVEL=4',
 		'-DSWI_DISABLE0', '-DBLE_STACK_SUPPORT_REQD',
 		'-DSOFTDEVICE_PRESENT','-DS130','-DNRF_SD_BLE_API_VERSION=2'])
 
