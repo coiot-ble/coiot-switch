@@ -37,10 +37,6 @@ void sec_req_timeout_handler(void *ctx) {
 	}
 }
 
-static void bsp_event_handler(bsp_event_t event) {
-	log_enter("%d", event);
-}
-
 static void ble_event_handler(ble_evt_t *event) {
 	log_enter("%d", event->header.evt_id);
 	ble_conn_params_on_ble_evt(event);
@@ -116,7 +112,7 @@ int main(void) {
 
 	err_code = bsp_init(BSP_INIT_LED | BSP_INIT_BUTTONS,
 			APP_TIMER_TICKS(100, prescaler),
-			bsp_event_handler);
+			NULL);
 	APP_ERROR_CHECK(err_code);
 
 	bsp_event_t startup_event;
