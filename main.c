@@ -26,10 +26,6 @@ static void adv_event_handler(ble_adv_evt_t event) {
 	bsp_indication_set(BSP_INDICATE_ADVERTISING);
 }
 
-static void conn_params_error_handler(uint32_t nrf_error) {
-	log_enter("%ld", nrf_error);
-}
-
 int main(void) {
 	int prescaler = 0;
 	uint32_t err_code = NRF_LOG_INIT(NULL);
@@ -141,8 +137,6 @@ int main(void) {
 		.max_conn_params_update_count = 3,
 		.start_on_notify_cccd_handle = BLE_GATT_HANDLE_INVALID,
 		.disconnect_on_fail = true,
-		.evt_handler = NULL,
-		.error_handler = conn_params_error_handler
 	};
 	err_code = ble_conn_params_init(&cp_init);
 	APP_ERROR_CHECK(err_code);
