@@ -36,25 +36,6 @@ static void ble_event_handler(ble_evt_t *event) {
 	case BLE_GAP_EVT_DISCONNECTED:
 		info("disconnected");
 		break;
-	case BLE_GATTS_EVT_TIMEOUT:
-		warn("GATT server timeout");
-		sd_ble_gap_disconnect(event->evt.gatts_evt.conn_handle,
-				BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
-		break;
-	case BLE_GATTC_EVT_TIMEOUT:
-		warn("GATT client timeout");
-		sd_ble_gap_disconnect(event->evt.gattc_evt.conn_handle,
-				BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
-		break;
-	case BLE_GATTS_EVT_RW_AUTHORIZE_REQUEST: {
-		info("gatts rw auth req");
-		ble_gatts_rw_authorize_reply_params_t reply = {
-			.type = BLE_GATTS_AUTHORIZE_TYPE_READ,
-			.params.write.gatt_status = BLE_GATT_STATUS_ATTERR_APP_BEGIN + 2
-		};
-		sd_ble_gatts_rw_authorize_reply(event->evt.gatts_evt.conn_handle, &reply);
-		break;
-		}
 	default:
 		dbg("unwanaged ble event type");
 		break;
@@ -76,9 +57,6 @@ int main(void) {
 	int prescaler = 0;
 	uint32_t err_code = NRF_LOG_INIT(NULL);
 	APP_ERROR_CHECK(err_code);
-
-	info("Hello !");
-	log_verbose = true;
 
 	APP_TIMER_INIT(prescaler, 4, false);
 
