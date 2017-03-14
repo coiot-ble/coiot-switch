@@ -26,10 +26,6 @@ static void adv_event_handler(ble_adv_evt_t event) {
 	bsp_indication_set(BSP_INDICATE_ADVERTISING);
 }
 
-static void db_discovery_handler(ble_db_discovery_evt_t *event) {
-	log_enter("%p", event);
-}
-
 static void conn_params_error_handler(uint32_t nrf_error) {
 	log_enter("%ld", nrf_error);
 }
@@ -129,7 +125,7 @@ int main(void) {
 	err_code = ble_advertising_init(&advdata, NULL, &options, adv_event_handler, NULL);
 	APP_ERROR_CHECK(err_code);
 
-	err_code = ble_db_discovery_init(db_discovery_handler);
+	err_code = ble_db_discovery_init(NULL);
 	APP_ERROR_CHECK(err_code);
 
 	ble_dis_init_t dis_init = {};
