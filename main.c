@@ -41,6 +41,48 @@ static void bsp_event_handler(bsp_event_t event) {
 	log_enter("%d", event);
 }
 
+static void ble_event_handler(ble_evt_t *event) {
+	log_enter("%d", event->header.evt_id);
+	ble_conn_params_on_ble_evt(event);
+	ble_conn_state_on_ble_evt(event);
+	pm_on_ble_evt(event);
+	bsp_btn_ble_on_ble_evt(event);
+
+	switch(event->header.evt_id) {
+	case BLE_GAP_EVT_CONNECTED:
+		info("connected");
+		bsp_indication_set(BSP_INDICATE_CONNECTED);
+		break;
+	case BLE_GAP_EVT_DISCONNECTED:
+		info("disconnected");
+		break;
+	case BLE_GATTS_EVT_TIMEOUT:
+		warn("GATT server timeout");
+		sd_ble_gap_disconnect(event->evt.gatts_evt.conn_handle,
+				BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
+		break;
+	case BLE_GATTC_EVT_TIMEOUT:
+		warn("GATT client timeout");
+		sd_ble_gap_disconnect(event->evt.gattc_evt.conn_handle,
+				BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
+		break;
+	case BLE_GATTS_EVT_RW_AUTHORIZE_REQUEST: {
+		info("gatts rw auth req");
+		ble_gatts_rw_authorize_reply_params_t reply = {
+			.type = BLE_GATTS_AUTHORIZE_TYPE_READ,
+			.params.write.gatt_status = BLE_GATT_STATUS_ATTERR_APP_BEGIN + 2
+		};
+		sd_ble_gatts_rw_authorize_reply(event->evt.gatts_evt.conn_handle, &reply);
+		break;
+		}
+	default:
+		dbg("unwanaged ble event type");
+		break;
+	}
+
+	ble_advertising_on_ble_evt(event);
+}
+
 static void sys_event_handler(uint32_t event) {
 	log_enter("%ld", event);
 }
