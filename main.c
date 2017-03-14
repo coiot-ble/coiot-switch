@@ -16,6 +16,7 @@
 #include <ble_advertising.h>
 #include <ble_db_discovery.h>
 #include <ble_conn_params.h>
+#include <ble_dis.h>
 
 static void *seq_req_timeout_handler_arg = NULL;
 void sec_req_timeout_handler(void *ctx) {
@@ -64,6 +65,7 @@ int main(void) {
 	APP_ERROR_CHECK(err_code);
 
 	info("Hello !");
+	log_verbose = true;
 
 	APP_TIMER_INIT(prescaler, 4, false);
 	APP_TIMER_DEF(sec_req_timer_id);
@@ -163,6 +165,12 @@ int main(void) {
 	APP_ERROR_CHECK(err_code);
 
 	err_code = ble_db_discovery_init(db_discovery_handler);
+	APP_ERROR_CHECK(err_code);
+
+	ble_dis_init_t dis_init = {};
+	ble_srv_ascii_to_utf8(&dis_init.manufact_name_str, "Leo G.");
+	ble_srv_ascii_to_utf8(&dis_init.model_num_str, "coiot-dk");
+	err_code = ble_dis_init(&dis_init);
 	APP_ERROR_CHECK(err_code);
 
 	ble_conn_params_init_t cp_init = {

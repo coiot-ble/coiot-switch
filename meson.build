@@ -1,6 +1,7 @@
 project('app', 'C')
 
-sdk = subproject('sdk')
+sdk = subproject('sdk',
+    default_options: ['ble_dis=true'])
 vanilla = subproject('vanilla',
     default_options: ['no_stderr=1','printf=NRF_LOG_INFO'])
 
@@ -28,7 +29,7 @@ hex=custom_target(meson.project_name() + '.hex',
 
 run_target('flash',
 	depends: hex,
-	command: ['nrfjprog', '--program', hex, '--verify', '-f', 'nrf51', '--sectorerase']
+	command: ['nrfjprog', '--program', hex, '--verify', '-f', 'nrf51', '--sectorerase', '-r']
 )
 
 run_target('flash_softdevice', command: sdk.get_variable('cmd_flash_softdevice'))
