@@ -21,22 +21,6 @@
 #include <ble_conn_state.h>
 #include <ble_dis.h>
 
-static void *seq_req_timeout_handler_arg = NULL;
-void sec_req_timeout_handler(void *ctx) {
-	uint16_t *cur_handle = seq_req_timeout_handler_arg;
-	if(*cur_handle != BLE_CONN_HANDLE_INVALID) {
-		pm_conn_sec_status_t status;
-		uint32_t err_code = pm_conn_sec_status_get(*cur_handle, &status);
-		APP_ERROR_CHECK(err_code);
-
-		if(!status.encrypted) {
-			NRF_LOG_INFO("Start encryption\r\n");
-			err_code = pm_conn_secure(*cur_handle, false);
-			APP_ERROR_CHECK(err_code);
-		}
-	}
-}
-
 static void ble_event_handler(ble_evt_t *event) {
 	log_enter("%d", event->header.evt_id);
 	ble_conn_params_on_ble_evt(event);
