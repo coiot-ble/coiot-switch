@@ -77,6 +77,8 @@ int main(void) {
 			&ble_enable_params);
 	APP_ERROR_CHECK(err_code);
 
+	ble_enable_params.gatts_enable_params.service_changed = true;
+
 	CHECK_RAM_START_ADDR(0, 1);
 
 	err_code = softdevice_enable(&ble_enable_params);
@@ -151,12 +153,22 @@ int main(void) {
 	err_code = ble_db_discovery_init(db_discovery_handler);
 	APP_ERROR_CHECK(err_code);
 
+	ble_gap_addr_t btaddr;
+	sd_ble_gap_address_get(&btaddr);
+
 	ble_dis_init_t dis_init = {};
 	ble_srv_ascii_to_utf8(&dis_init.manufact_name_str, "Leo G.");
 	ble_srv_ascii_to_utf8(&dis_init.model_num_str, "coiot-dk");
+	char serial[5];
+	sprintf(serial, "%02x%02x", btaddr.addr[4], btaddr.addr[5]);
+	ble_srv_ascii_to_utf8(&dis_init.serial_num_str, serial);
+
 	BLE_GAP_CONN_SEC_MODE_SET_OPEN(&dis_init.dis_attr_md.read_perm);
 	BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&dis_init.dis_attr_md.write_perm);
 	err_code = ble_dis_init(&dis_init);
+	if(err_code != NRF_SUCCESS) {
+		NRF_LOG_ERROR("Could not init device informations service\r\n");
+	}
 	APP_ERROR_CHECK(err_code);
 
 	ble_conn_params_init_t cp_init = {
@@ -172,9 +184,6 @@ int main(void) {
 
 	err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
 	APP_ERROR_CHECK(err_code);
-
-	ble_gap_addr_t btaddr;
-	sd_ble_gap_address_get(&btaddr);
 
 	NRF_LOG_INFO("btaddr = %02x:%02x:%02x:%02x:%02x:%02x\r\n",
 			btaddr.addr[5],
