@@ -162,6 +162,7 @@ int main(void) {
 	char serial[5];
 	sprintf(serial, "%02x%02x", btaddr.addr[4], btaddr.addr[5]);
 	ble_srv_ascii_to_utf8(&dis_init.serial_num_str, serial);
+	ble_srv_ascii_to_utf8(&dis_init.sw_rev_str, "0.1");
 
 	BLE_GAP_CONN_SEC_MODE_SET_OPEN(&dis_init.dis_attr_md.read_perm);
 	BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&dis_init.dis_attr_md.write_perm);
