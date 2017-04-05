@@ -13,6 +13,8 @@
 #undef ASSERT
 #include <log/log.h>
 
+#include <nrf_gpio.h>
+
 #include <softdevice_handler.h>
 #include <ble_advdata.h>
 #include <ble_advertising.h>
@@ -20,6 +22,22 @@
 #include <ble_conn_params.h>
 #include <ble_conn_state.h>
 #include <ble_dis.h>
+
+#define SWITCH_GPIO 7
+
+static void set_switch(bool nc) {
+	if(nc) {
+		nrf_gpio_pin_set(SWITCH_GPIO);
+	} else {
+		nrf_gpio_pin_clear(SWITCH_GPIO);
+	}
+}
+
+static void init_switch(void) {
+	nrf_gpio_cfg_output(SWITCH_GPIO);
+	set_switch(true);
+	info("pin %d is %d", SWITCH_GPIO, nrf_gpio_pin_out_read(SWITCH_GPIO));
+}
 
 static void ble_event_handler(ble_evt_t *event) {
 	log_enter("%d", event->header.evt_id);
@@ -32,9 +50,11 @@ static void ble_event_handler(ble_evt_t *event) {
 	case BLE_GAP_EVT_CONNECTED:
 		info("connected");
 		bsp_indication_set(BSP_INDICATE_CONNECTED);
+		set_switch(false);
 		break;
 	case BLE_GAP_EVT_DISCONNECTED:
 		info("disconnected");
+		set_switch(true);
 		break;
 	default:
 		dbg("unwanaged ble event type");
@@ -112,7 +132,7 @@ int main(void) {
 	err_code = pm_sec_params_set(&sec_params);
 	APP_ERROR_CHECK(err_code);
 
-	const char *device_name = "Device Informations";
+	const char *device_name = "COIoT Switch";
 	ble_gap_conn_sec_mode_t sec_mode;
 	BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
 	err_code = sd_ble_gap_device_name_set(&sec_mode,
@@ -193,6 +213,8 @@ int main(void) {
 			btaddr.addr[2],
 			btaddr.addr[1],
 			btaddr.addr[0]);
+
+	init_switch();
 
 	while(true) {
 		if(!NRF_LOG_PROCESS()) {
