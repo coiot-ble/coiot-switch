@@ -13,8 +13,6 @@
 #undef ASSERT
 #include <log/log.h>
 
-#include <nrf_gpio.h>
-
 #include <softdevice_handler.h>
 #include <ble_advdata.h>
 #include <ble_advertising.h>
@@ -22,22 +20,9 @@
 #include <ble_conn_params.h>
 #include <ble_conn_state.h>
 #include <ble_dis.h>
+#include <ble_automation_io.h>
 
 #define SWITCH_GPIO 7
-
-static void set_switch(bool nc) {
-	if(nc) {
-		nrf_gpio_pin_set(SWITCH_GPIO);
-	} else {
-		nrf_gpio_pin_clear(SWITCH_GPIO);
-	}
-}
-
-static void init_switch(void) {
-	nrf_gpio_cfg_output(SWITCH_GPIO);
-	set_switch(true);
-	info("pin %d is %d", SWITCH_GPIO, nrf_gpio_pin_out_read(SWITCH_GPIO));
-}
 
 static void ble_event_handler(ble_evt_t *event) {
 	log_enter("%d", event->header.evt_id);
@@ -46,15 +31,16 @@ static void ble_event_handler(ble_evt_t *event) {
 	pm_on_ble_evt(event);
 	bsp_btn_ble_on_ble_evt(event);
 
+	ble_automation_io_on_ble_evt(event);
+
 	switch(event->header.evt_id) {
 	case BLE_GAP_EVT_CONNECTED:
 		info("connected");
 		bsp_indication_set(BSP_INDICATE_CONNECTED);
-		set_switch(false);
 		break;
 	case BLE_GAP_EVT_DISCONNECTED:
 		info("disconnected");
-		set_switch(true);
+		bsp_indication_set(BSP_INDICATE_ADVERTISING);
 		break;
 	default:
 		dbg("unwanaged ble event type");
@@ -192,6 +178,14 @@ int main(void) {
 	}
 	APP_ERROR_CHECK(err_code);
 
+	struct ble_automation_io aio = {};
+	struct ble_automation_io_gpio switch_gpio = {
+		SWITCH_GPIO,
+		true,
+		true
+	};
+	init_ble_automation_io(&aio, &switch_gpio);
+
 	ble_conn_params_init_t cp_init = {
 		.p_conn_params = NULL,
 		.first_conn_params_update_delay = APP_TIMER_TICKS(5000, prescaler),
@@ -213,8 +207,6 @@ int main(void) {
 			btaddr.addr[2],
 			btaddr.addr[1],
 			btaddr.addr[0]);
-
-	init_switch();
 
 	while(true) {
 		if(!NRF_LOG_PROCESS()) {
