@@ -3,7 +3,7 @@ project('app', 'C')
 sdk = subproject('sdk',
     default_options: ['ble_dis=true'])
 vanilla = subproject('vanilla',
-    default_options: ['no_stderr=true','printf=NRF_LOG_INFO'])
+    default_options: ['no_stderr=true','printf=NRF_LOG_INFO', 'tests=false'])
 
 app = files('main.c')
 
