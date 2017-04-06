@@ -1,7 +1,7 @@
 project('app', 'C')
 
 sdk = subproject('sdk',
-    default_options: ['ble_dis=true'])
+    default_options: ['ble_dis=true', 'libble_aio=true'])
 vanilla = subproject('vanilla',
     default_options: ['no_stderr=true','printf=NRF_LOG_INFO', 'tests=false'])
 
