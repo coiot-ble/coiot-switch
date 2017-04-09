@@ -43,7 +43,7 @@ static void ble_event_handler(ble_evt_t *event) {
 		bsp_indication_set(BSP_INDICATE_ADVERTISING);
 		break;
 	default:
-		dbg("unwanaged ble event type");
+		dbg("unmanaged ble event type");
 		break;
 	}
 
