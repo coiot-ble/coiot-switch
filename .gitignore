@@ -1,8 +1,17 @@
+### C ###
+# Prerequisites
+*.d
+
 # Object files
 *.o
 *.ko
 *.obj
 *.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
 
 # Precompiled Headers
 *.gch
@@ -31,3 +40,30 @@
 # Debug files
 *.dSYM/
 *.su
+*.idb
+*.pdb
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+
+### Git ###
+*.orig
+
+### Vim ###
+# swap
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-v][a-z]
+[._]sw[a-p]
+# session
+Session.vim
+# temporary
+.netrwhist
+*~
+# auto-generated tag files
+tags
